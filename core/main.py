@@ -109,7 +109,7 @@ def update_user_details():
 		cursor.close()
 		conn.close()
 
-@app.route('/transaction/<int:a_id>')
+@app.route('/transaction/accountID:<int:a_id>')
 def transaction(a_id):
 	try:
 		conn = mysql.connect()
