@@ -22,7 +22,7 @@ def login():
                     "data": "Login successful."
                 })
             else:
-                return jsonify({
+                resp = jsonify({
                     "code": 401,
                     "data": "Either your username or password is wrong."
                 })
@@ -35,6 +35,26 @@ def login():
     finally:
         cursor.close() 
         conn.close()
+
+@app.route('/account/user_details/<int:u_id>', methods=['GET'])
+def get_user_details(u_id):
+	print(u_id)
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute("SELECT UserID, Firstname, Lastname, Email, Address FROM User WHERE UserID=%s", u_id)
+		row = cursor.fetchone()
+		if row != None:
+			resp = jsonify(row)
+		else:
+			resp = jsonify("User not found")
+		resp.status_code = 200
+		return resp
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close() 
+		conn.close()
 
 @app.route('/transaction/<int:a_id>')
 def transaction(a_id):
