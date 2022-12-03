@@ -112,12 +112,13 @@ def update_user_details():
 @app.route('/transaction/<int:a_id>')
 def transaction(a_id):
 	try:
-		transaction_list = {}
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("SELECT TransactionID t_id, AccountID a_id, Date date, TransactionAmount amt, Comment comment FROM scheduledtransactions WHERE AccountID=%s", a_id)
 		rows = cursor.fetchall()
-		resp = jsonify(transaction_list)
+		resp = jsonify({
+			"transactionList": rows
+		})
 		resp.status_code = 200
 		return resp
 	except Exception as e:
