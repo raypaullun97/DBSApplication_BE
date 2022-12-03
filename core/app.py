@@ -11,9 +11,9 @@ params = urllib.parse.quote_plus("DRIVER={SQL Server Native Client 11.0};"
                                  "DATABASE=test2;"
                                  "Trusted_Connection=yes")
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = ("mssql+pyodbc:///?odbc_connect={}".format(params))
-# db = SQLAlchemy(app)
-# logging.debug("DB setup complete")
+app.config['SQLALCHEMY_DATABASE_URI'] = ("mssql+pyodbc:///?odbc_connect={}".format(params))
+db = SQLAlchemy(app)
+logging.debug("DB setup complete")
 
 @app.route("/")
 def hello():
@@ -23,6 +23,11 @@ def hello():
     logging.debug("GET '/'")
     # db.session.close()
     return {"message" : "Hello world"}
+
+@app.route("/details/<string:name>", methods=['GET'])
+def get_account_details(name):
+    return {"message" : "get_account_details"}
+
 
 def runner():
     app.run(host='0.0.0.0', port=os.environ.get('listenport', 8080))
