@@ -27,7 +27,7 @@ def get_account_details(userID):
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT * FROM BankAccount WHERE UserId=%s", int(UserID))
+		cursor.execute("SELECT * FROM BankAccount WHERE UserId=%s", int(userID))
 		row = cursor.fetchone()
 		resp = jsonify(row)
 		resp.status_code = 200
