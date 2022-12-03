@@ -15,34 +15,36 @@ jwt = JWTManager(app)
 		
 @app.route('/account/login', methods=['POST'])
 def login():
-    try:
-        _json = request.get_json()
-        _username = _json['credentials']['username']
-        _password = _json['credentials']['password']
-        if _username and _password and request.method == 'POST':
-            conn = mysql.connect()
-            cursor = conn.cursor(pymysql.cursors.DictCursor)
-            cursor.execute(f"SELECT * FROM User WHERE Username=%s and Password=%s",( _username, _password,))
-            row = cursor.fetchone()
-            if row != None:
-                resp = jsonify({
-                    "code": 200,
-                    "data": "Login successful."
-                })
-            else:
-                resp = jsonify({
-                    "code": 401,
-                    "data": "Either your username or password is wrong."
-                })
-            resp.status_code = 200
-            return resp
-        else: 
-            return not_found()
-    except Exception as e:
-        print(e)
-    finally:
-        cursor.close() 
-        conn.close()
+	try:
+		_json = request.get_json()
+		_username = _json['credentials']['username']
+		_password = _json['credentials']['password']
+		if _username and _password and request.method == 'POST':
+			conn = mysql.connect()
+			cursor = conn.cursor(pymysql.cursors.DictCursor)
+			cursor.execute(f"SELECT * FROM User WHERE Username=%s and Password=%s",( _username, _password,))
+			row = cursor.fetchone()
+			if row != None:
+				access_token = create_access_token(identity=_username)
+				resp = jsonify({
+					"code": 200,
+					"data": "Login successful.",
+					"access_token": access_token
+				})
+			else:
+				resp = jsonify({
+					"code": 401,
+					"data": "Either your username or password is wrong."
+				})
+			resp.status_code = 200
+			return resp
+		else:
+			return not_found()
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close()
+		conn.close()
 
 @app.route('/account/user_details/<int:u_id>', methods=['GET'])
 def get_user_details(u_id):
@@ -108,15 +110,18 @@ def addtransaction():
 		cursor.close() 
 		conn.close()
 
-@app.route("/details/<string:userID>", methods=["POST"])
-# @jwt_required()
-def get_account_details(userID):
+@app.route("/details", methods=["POST"])
+@jwt_required()
+def get_account_details():
 	# Access the identity of the current user with get_jwt_identity
-	# current_user = get_jwt_identity()
+	current_user = get_jwt_identity()
 	try:
+		_json = request.get_json()
+		_userId = _json['credentials']['userId']
+		# _password = _json['credentials']['access_token']
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT * FROM BankAccount WHERE UserId=%s", int(userID))
+		cursor.execute("SELECT * FROM BankAccount WHERE UserId=%s", int(_userId))
 		row = cursor.fetchone()
 		resp = jsonify(row)
 		resp.status_code = 200
