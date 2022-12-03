@@ -10,7 +10,7 @@ def deleteFutureTrans(id):
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("DELETE scheduledtransactions WHERE AccountID={0}".format(id))
+		cursor.execute("DELETE scheduledtransactions WHERE TransactionID={0}".format(id))
 		rows = cursor.fetchall()
 		resp = jsonify(rows)
 		resp.status_code = 200
