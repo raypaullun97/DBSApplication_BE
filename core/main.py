@@ -114,7 +114,7 @@ def transaction(a_id):
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT TransactionID t_id, AccountID a_id, Date date, TransactionAmount amt, Comment comment FROM scheduledtransactions WHERE AccountID=%s", a_id)
+		cursor.execute("SELECT TransactionID TransactionID, AccountID AccountID, Date Date, TransactionAmount TransactionAmount, Comment Comment FROM scheduledtransactions WHERE AccountID=%s", a_id)
 		rows = cursor.fetchall()
 		resp = jsonify({
 			"transactionList": rows
