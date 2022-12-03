@@ -80,6 +80,7 @@ def update_user_details():
 			row = cursor.fetchone()
 			if row != None:
 				cursor.execute("UPDATE User SET Address=%s, Email=%s WHERE UserID=%s",( _address, _email, _userID, ))
+				conn.commit()
 				resp = jsonify({
 					"code": 200,
 					"data": "Update successful."
