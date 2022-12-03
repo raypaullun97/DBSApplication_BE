@@ -5,7 +5,7 @@ from flask import jsonify
 from flask import flash, request
 from werkzeug import generate_password_hash, check_password_hash
 
-@app.route('/ft/<int:id>',method=["DELETE"])
+@app.route('/ft/<int:id>',methods=["DELETE"])
 def deleteFutureTrans(id):
 	try:
 		conn = mysql.connect()
