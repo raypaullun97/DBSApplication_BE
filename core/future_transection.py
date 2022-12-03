@@ -11,8 +11,8 @@ def deleteFutureTrans(id):
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("DELETE FROM scheduledtransactions WHERE TransactionID=%s", (id,))
-		rows = cursor.fetchall()
-		resp = jsonify(rows)
+		conn.commit()
+		resp = jsonify('User deleted successfully!')
 		resp.status_code = 200
 		return resp
 	except Exception as e:
@@ -20,6 +20,7 @@ def deleteFutureTrans(id):
 	finally:
 		cursor.close() 
 		conn.close()
+
 
 if __name__ == "__main__":
     app.run()
