@@ -24,7 +24,7 @@ def hello():
     # db.session.close()
     return {"message" : "Hello world"}
 
-@app.route("/details/<string:name>", methods=['GET'])
+@app.route("/details/<string:name>", methods=['POST'])
 def get_account_details(name):
     return {"message" : "get_account_details"}
 
