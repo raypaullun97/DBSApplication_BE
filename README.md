@@ -5,4 +5,7 @@
 4. Insert transaction - Weilun
 5. Delete a Future Transection Entry - Hwee Kiat
 6. Return and update list of user details - Jo Wann
-7.
+
+
+#Extra
+1. Data Engineering & Artificial Intelligence/Machine Learning Modules (AI1) - Weilun
