@@ -14,7 +14,7 @@ def login():
         if _username and _password and request.method == 'POST':
             conn = mysql.connect()
             cursor = conn.cursor(pymysql.cursors.DictCursor)
-            cursor.execute(f"SELECT * FROM User WHERE Username=%s and Password=%s",( _username, _password,))
+            cursor.execute("SELECT * FROM User WHERE Username=%s and Password=%s",( _username, _password,))
             row = cursor.fetchone()
             if row != None:
                 resp = jsonify({
@@ -52,6 +52,37 @@ def get_user_details(u_id):
 		return resp
 	except Exception as e:
 		print(e)
+	finally:
+		cursor.close() 
+		conn.close()
+
+@app.route('/account/update_details', methods=['POST'])
+def update_user_details():
+	try:
+		_json = request.get_json()
+		_userID = _json['userID']
+		_email = _json['email']
+		_address = _json['address']
+		if _userID and request.method == 'POST':
+			conn = mysql.connect()
+			cursor = conn.cursor(pymysql.cursors.DictCursor)
+			cursor.execute("SELECT UserID, Firstname, Lastname, Email, Address FROM User WHERE UserID=%s", _userID)
+			row = cursor.fetchone()
+			if row != None:
+				cursor.execute("UPDATE User SET Address=%s, Email=%s WHERE UserID=%s",( _address, _email, _userID, ))
+				resp = jsonify({
+					"code": 200,
+					"data": "Update successful."
+				})
+			else:
+				resp = jsonify("Unable to update details.")
+			resp.status_code = 200
+			return resp
+		else: 
+			return not_found()
+	except Exception as e:
+		print(e)
+		return resp
 	finally:
 		cursor.close() 
 		conn.close()
