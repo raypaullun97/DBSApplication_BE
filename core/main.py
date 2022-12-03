@@ -3,7 +3,6 @@ from app import app
 from db_config import mysql
 from flask import jsonify
 from flask import flash, request
-from flask_jwt import JWT,current_identity
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
@@ -207,4 +206,4 @@ def not_found(error=None):
     return resp
 		
 if __name__ == "__main__":
-    app.run(port = 5000, host="0.0.0.0")
+    app.run(port = 8000, host="0.0.0.0")
