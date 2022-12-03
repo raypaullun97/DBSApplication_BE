@@ -5,12 +5,12 @@ from flask import jsonify
 from flask import flash, request
 from werkzeug import generate_password_hash, check_password_hash
 
-@app.route('/ft/<int:id>')
+@app.route('/ft/<int:id>',method=["DELETE"])
 def deleteFutureTrans(id):
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("DELETE scheduledtransactions WHERE TransactionID={0}".format(id))
+		cursor.execute("DELETE FROM scheduledtransactions WHERE TransactionID=%s", (id,))
 		rows = cursor.fetchall()
 		resp = jsonify(rows)
 		resp.status_code = 200
