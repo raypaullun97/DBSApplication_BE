@@ -12,7 +12,7 @@ from flask_jwt_extended import JWTManager
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
 jwt = JWTManager(app)
-		
+
 @app.route('/account/login', methods=['POST'])
 def login():
 	try:
@@ -64,6 +64,37 @@ def get_user_details(u_id):
 		print(e)
 	finally:
 		cursor.close() 
+		conn.close()
+
+@app.route('/account/update_details', methods=['POST'])
+def update_user_details():
+	try:
+		_json = request.get_json()
+		_userID = _json['userID']
+		_email = _json['email']
+		_address = _json['address']
+		if _userID and request.method == 'POST':
+			conn = mysql.connect()
+			cursor = conn.cursor(pymysql.cursors.DictCursor)
+			cursor.execute("SELECT UserID, Firstname, Lastname, Email, Address FROM User WHERE UserID=%s", _userID)
+			row = cursor.fetchone()
+			if row != None:
+				cursor.execute("UPDATE User SET Address=%s, Email=%s WHERE UserID=%s",( _address, _email, _userID, ))
+				resp = jsonify({
+					"code": 200,
+					"data": "Update successful."
+				})
+			else:
+				resp = jsonify("Unable to update details.")
+			resp.status_code = 200
+			return resp
+		else:
+			return not_found()
+	except Exception as e:
+		print(e)
+		return resp
+	finally:
+		cursor.close()
 		conn.close()
 
 @app.route('/transaction/<int:a_id>')
@@ -124,6 +155,23 @@ def get_account_details():
 		cursor.execute("SELECT * FROM BankAccount WHERE UserId=%s", int(_userId))
 		row = cursor.fetchone()
 		resp = jsonify(row)
+		resp.status_code = 200
+		return resp
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close()
+		conn.close()
+
+
+@app.route('/ft/<int:id>',methods=["DELETE"])
+def deleteFutureTrans(id):
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute("DELETE FROM scheduledtransactions WHERE TransactionID=%s", (id,))
+		conn.commit()
+		resp = jsonify('Transection deleted successfully!')
 		resp.status_code = 200
 		return resp
 	except Exception as e:
