@@ -3,8 +3,7 @@ from app import app
 from db_config import mysql
 from flask import jsonify
 from flask import flash, request
-from werkzeug import generate_password_hash, check_password_hash
-		
+
 		
 @app.route('/transaction/<int:a_id>')
 def transaction(a_id):
@@ -23,7 +22,21 @@ def transaction(a_id):
 		conn.close()
 
 
-		
+@app.route("/details/<string:accountId>", methods=["POST"])
+def get_account_details(userID):
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute("SELECT * FROM BankAccount WHERE UserId=%s", int(UserID))
+		row = cursor.fetchone()
+		resp = jsonify(row)
+		resp.status_code = 200
+		return resp
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close()
+		conn.close()
 
 		
 @app.errorhandler(404)
