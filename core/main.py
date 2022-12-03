@@ -22,7 +22,7 @@ def transaction(a_id):
 		conn.close()
 
 
-@app.route("/details/<string:accountId>", methods=["POST"])
+@app.route("/details/<string:userID>", methods=["POST"])
 def get_account_details(userID):
 	try:
 		conn = mysql.connect()
