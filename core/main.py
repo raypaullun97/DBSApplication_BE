@@ -116,6 +116,23 @@ def get_account_details(userID):
 		cursor.close()
 		conn.close()
 
+
+@app.route('/ft/<int:id>',methods=["DELETE"])
+def deleteFutureTrans(id):
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute("DELETE FROM scheduledtransactions WHERE TransactionID=%s", (id,))
+		conn.commit()
+		resp = jsonify('Transection deleted successfully!')
+		resp.status_code = 200
+		return resp
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close() 
+		conn.close()
+
 		
 @app.errorhandler(404)
 def not_found(error=None):
